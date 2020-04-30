@@ -42,8 +42,8 @@ void writeLog(int type, std::string content, int level)
     if(print_debug_info)
         std::cerr<<getTime(2)<<" [DEBUG] "<<content<<"\n";
     */
-    if(level > global_log_level)
-        return;
+    //if(level > global_log_level)
+    //    return;
     //std::cerr<<getTime(2)<<" ["<<getpid()<<"]";
 
     switch(level)
