@@ -126,7 +126,7 @@ std::string webGet(const std::string &url, const std::string &proxy, std::string
     if (startsWith(url, "data:"))
         return dataGet(url);
     // cache system
-    if(cache_ttl > 0)
+    /*if(cache_ttl > 0)
     {
         md("cache");
         const std::string url_md5 = getMD5(url);
@@ -166,7 +166,7 @@ std::string webGet(const std::string &url, const std::string &proxy, std::string
                 writeLog(0, "Fetch failed. No local cache available."); // cache not exist or not allow to serve cache, serving nothing
         }
         return content;
-    }
+    }*/
     return curlGet(url, proxy, response_headers, return_code);
 }
 

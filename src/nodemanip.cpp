@@ -49,6 +49,8 @@ int addNodes(std::string link, std::vector<nodeInfo> &allNodes, int groupID, std
         if(strFind(link, "surge:///install-config")) //surge config link
             link = UrlDecode(getUrlArg(link, "url"));
         strSub = webGet(link, proxy, extra_headers, cache_subscription);
+        writeLog(LOG_TYPE_INFO, "Get node data : ");
+        writeLog(LOG_TYPE_INFO, strSub);
         /*
         if(strSub.size() == 0)
         {
