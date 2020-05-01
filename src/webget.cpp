@@ -28,7 +28,7 @@ std::string user_agent_str = "subconverter/" + std::string(VERSION) + " cURL/" +
 static inline void curl_init()
 {
     static bool init = false;
-    if(!init)
+    if (!init)
     {
         curl_global_init(CURL_GLOBAL_ALL);
         init = true;
@@ -37,17 +37,17 @@ static inline void curl_init()
 
 static int writer(char *data, size_t size, size_t nmemb, std::string *writerData)
 {
-    if(writerData == NULL)
+    if (writerData == NULL)
         return 0;
 
-    writerData->append(data, size*nmemb);
+    writerData->append(data, size * nmemb);
 
     return size * nmemb;
 }
 
 static int size_checker(void *clientp, double dltotal, double dlnow, double ultotal, double ulnow)
 {
-    if(dltotal > 1048576.0)
+    if (dltotal > 1048576.0)
         return 1;
     return 0;
 }
@@ -81,14 +81,14 @@ static std::string curlGet(const std::string &url, const std::string &proxy, std
     curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, &data);
     curl_easy_setopt(curl_handle, CURLOPT_HEADERFUNCTION, writer);
     curl_easy_setopt(curl_handle, CURLOPT_HEADERDATA, &response_headers);
-    if(proxy.size())
+    if (proxy.size())
         curl_easy_setopt(curl_handle, CURLOPT_PROXY, proxy.data());
 
     return_code = curl_easy_perform(curl_handle);
     curl_easy_getinfo(curl_handle, CURLINFO_HTTP_CODE, &retVal);
     curl_easy_cleanup(curl_handle);
-
-    if(return_code != CURLE_OK || retVal != 200)
+    writeLog(1, "response data \n" + data, LOG_LEVEL_INFO);
+    if (return_code != CURLE_OK || retVal != 200)
         data.clear();
     data.shrink_to_fit();
 
@@ -105,9 +105,12 @@ static std::string dataGet(const std::string &url)
         return "";
 
     std::string data = UrlDecode(url.substr(comma));
-    if (endsWith(url.substr(0, comma), ";base64")) {
+    if (endsWith(url.substr(0, comma), ";base64"))
+    {
         return urlsafe_base64_decode(data);
-    } else {
+    }
+    else
+    {
         return data;
     }
 }
@@ -192,7 +195,7 @@ int curlPost(const std::string &url, const std::string &data, const std::string 
     curl_init();
     curl_handle = curl_easy_init();
     list = curl_slist_append(list, "Content-Type: application/json;charset='utf-8'");
-    for(const std::string &x : request_headers)
+    for (const std::string &x : request_headers)
         list = curl_slist_append(list, x.data());
 
     curl_set_common_options(curl_handle, url.data());
@@ -203,13 +206,13 @@ int curlPost(const std::string &url, const std::string &data, const std::string 
     curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, retData);
     curl_easy_setopt(curl_handle, CURLOPT_HTTPHEADER, list);
     curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, user_agent_str.data());
-    if(proxy.size())
+    if (proxy.size())
         curl_easy_setopt(curl_handle, CURLOPT_PROXY, proxy.data());
 
     res = curl_easy_perform(curl_handle);
     curl_slist_free_all(list);
 
-    if(res == CURLE_OK)
+    if (res == CURLE_OK)
     {
         res = curl_easy_getinfo(curl_handle, CURLINFO_HTTP_CODE, &retVal);
     }
@@ -236,7 +239,7 @@ int curlPatch(const std::string &url, const std::string &data, const std::string
     curl_handle = curl_easy_init();
 
     list = curl_slist_append(list, "Content-Type: application/json;charset='utf-8'");
-    for(const std::string &x : request_headers)
+    for (const std::string &x : request_headers)
         list = curl_slist_append(list, x.data());
 
     curl_set_common_options(curl_handle, url.data());
@@ -247,12 +250,12 @@ int curlPatch(const std::string &url, const std::string &data, const std::string
     curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, retData);
     curl_easy_setopt(curl_handle, CURLOPT_HTTPHEADER, list);
     curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, user_agent_str.data());
-    if(proxy.size())
+    if (proxy.size())
         curl_easy_setopt(curl_handle, CURLOPT_PROXY, proxy.data());
 
     res = curl_easy_perform(curl_handle);
     curl_slist_free_all(list);
-    if(res == CURLE_OK)
+    if (res == CURLE_OK)
     {
         res = curl_easy_getinfo(curl_handle, CURLINFO_HTTP_CODE, &retVal);
     }
@@ -279,7 +282,7 @@ int curlHead(const std::string &url, const std::string &proxy, const string_arra
     curl_handle = curl_easy_init();
 
     list = curl_slist_append(list, "Content-Type: application/json;charset='utf-8'");
-    for(const std::string &x : request_headers)
+    for (const std::string &x : request_headers)
         list = curl_slist_append(list, x.data());
 
     curl_set_common_options(curl_handle, url.data());
@@ -288,12 +291,12 @@ int curlHead(const std::string &url, const std::string &proxy, const string_arra
     curl_easy_setopt(curl_handle, CURLOPT_NOBODY, 1L);
     curl_easy_setopt(curl_handle, CURLOPT_HTTPHEADER, list);
     curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, user_agent_str.data());
-    if(proxy.size())
+    if (proxy.size())
         curl_easy_setopt(curl_handle, CURLOPT_PROXY, proxy.data());
 
     res = curl_easy_perform(curl_handle);
     curl_slist_free_all(list);
-    if(res == CURLE_OK)
+    if (res == CURLE_OK)
         res = curl_easy_getinfo(curl_handle, CURLINFO_HTTP_CODE, &retVal);
 
     curl_easy_cleanup(curl_handle);
