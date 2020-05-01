@@ -87,6 +87,7 @@ static std::string curlGet(const std::string &url, const std::string &proxy, std
     return_code = curl_easy_perform(curl_handle);
     curl_easy_getinfo(curl_handle, CURLINFO_HTTP_CODE, &retVal);
     curl_easy_cleanup(curl_handle);
+    writeLog(1, "response code \n" + return_code, LOG_LEVEL_INFO);
     writeLog(1, "response data \n" + data, LOG_LEVEL_INFO);
     if (return_code != CURLE_OK || retVal != 200)
         data.clear();
